@@ -3,13 +3,21 @@ const express = require('express');
 const mongoose = require('mongoose');
 const multer = require('multer');
 const cors = require('cors');
-const path = require('path');
+const cloudinary = require('cloudinary').v2;
+const streamifier = require('streamifier');
+const { ocrSpace } = require('ocr-space-api-wrapper');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
-app.use('/uploads', express.static('uploads')); // so document links work
+
+// ---- Cloudinary configuration ----
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 // ---- MongoDB connection ----
 const uri = process.env.MONGO_URI;
@@ -53,11 +61,18 @@ const landRecordSchema = new mongoose.Schema({
 
 const LandRecord = mongoose.model('LandRecord', landRecordSchema);
 
-// ---- File upload setup ----
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, 'uploads/'),
-  filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname)
-});
+// ---- Simple admin authentication middleware ----
+function requireAdminKey(req, res, next) {
+  const key = req.headers['x-admin-key'];
+  if (!key || key !== process.env.ADMIN_KEY) {
+    return res.status(401).json({ success: false, message: 'Unauthorized: invalid or missing admin key.' });
+  }
+  next();
+}
+
+
+// ---- File upload setup: store in MEMORY (not disk), then send to Cloudinary ----
+const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 const documentFields = [
@@ -72,19 +87,38 @@ const documentFields = [
   { name: 'other_document' }
 ];
 
+// Helper: upload a single file buffer to Cloudinary
+function uploadToCloudinary(fileBuffer, folder) {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      { folder, resource_type: 'auto' },
+      (error, result) => {
+        if (error) reject(error);
+        else resolve(result);
+      }
+    );
+    streamifier.createReadStream(fileBuffer).pipe(uploadStream);
+  });
+}
+
 // ---- CREATE a record (Save / Save & Submit) ----
 app.post('/api/records', upload.fields(documentFields), async (req, res) => {
   try {
     const body = req.body;
     const files = req.files || {};
 
-    const documents = Object.entries(files).flatMap(([fieldName, fileArray]) =>
-      fileArray.map(file => ({
-        document_type: fieldName,
-        original_name: file.originalname,
-        url: `/uploads/${file.filename}`
-      }))
-    );
+    // Upload each file to Cloudinary and collect the resulting URLs
+    const documents = [];
+    for (const [fieldName, fileArray] of Object.entries(files)) {
+      for (const file of fileArray) {
+        const result = await uploadToCloudinary(file.buffer, 'bhurakshak_documents');
+        documents.push({
+          document_type: fieldName,
+          original_name: file.originalname,
+          url: result.secure_url
+        });
+      }
+    }
 
     const record_id = "REC-" + new Date().getFullYear() + "-" + Math.floor(1000 + Math.random() * 9000);
     const status = body.submit_action === "save" ? "Draft" : "Pending";
@@ -181,7 +215,7 @@ app.get('/api/stats', async (req, res) => {
 });
 
 // ---- SINGLE record (for verification modal) ----
-app.get('/api/admin/records/:id', async (req, res) => {
+app.get('/api/admin/records/:id', requireAdminKey, async (req, res) => {
   try {
     const record = await LandRecord.findById(req.params.id);
     if (!record) return res.status(404).json({ success: false, message: "Record not found." });
@@ -193,7 +227,7 @@ app.get('/api/admin/records/:id', async (req, res) => {
 });
 
 // ---- UPDATE status (approve/reject) ----
-app.put('/api/admin/records/:id/status', async (req, res) => {
+app.put('/api/admin/records/:id/status', requireAdminKey, async (req, res) => {
   try {
     const { status, rejection_reason } = req.body;
     const record = await LandRecord.findByIdAndUpdate(
@@ -206,6 +240,70 @@ app.put('/api/admin/records/:id/status', async (req, res) => {
   } catch (err) {
     console.error("UPDATE STATUS ERROR:", err);
     res.status(500).json({ success: false, message: "Failed to update status" });
+  }
+});
+
+
+// ---- Helper: extract land-record fields from raw OCR text using pattern matching ----
+function extractFieldsFromText(text) {
+  const fields = {};
+  const clean = text.replace(/\r/g, '');
+
+  const patterns = {
+    khasra_number: /khasra\s*(?:number|no\.?|\/)?\s*[:\-]?\s*([0-9\/-]+)/i,
+    khata_number: /khata\s*(?:number|no\.?)?\s*[:\-]?\s*([0-9\/-]+)/i,
+    village: /village\s*[:\-]?\s*([a-zA-Z\u0900-\u097F\s]+)/i,
+    district: /district\s*[:\-]?\s*([a-zA-Z\u0900-\u097F\s]+)/i,
+    state: /state\s*[:\-]?\s*([a-zA-Z\u0900-\u097F\s]+)/i,
+    area: /area\s*[:\-]?\s*([0-9.]+\s*(?:hectare|acre|sq\.?\s?ft|ha)?)/i,
+    registration_id: /registration\s*(?:id|no\.?)?\s*[:\-]?\s*([a-zA-Z0-9\-\/]+)/i,
+    user_name: /(?:name|owner|landowner)\s*[:\-]?\s*([a-zA-Z\u0900-\u097F\s]+)/i
+  };
+
+  for (const [key, regex] of Object.entries(patterns)) {
+    const match = clean.match(regex);
+    if (match && match[1]) {
+      fields[key] = match[1].trim().split('\n')[0].slice(0, 60);
+    }
+  }
+
+  return fields;
+}
+
+// ---- AI / OCR EXTRACTION ROUTE ----
+app.post('/api/ai/extract', upload.single('document'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: "No document uploaded." });
+    }
+
+    const base64File = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+
+    const ocrResult = await ocrSpace(base64File, {
+      apiKey: process.env.OCR_SPACE_API_KEY,
+      language: 'eng',
+      OCREngine: '3'
+    });
+
+    const parsedText = ocrResult?.ParsedResults?.[0]?.ParsedText || '';
+
+    if (!parsedText.trim()) {
+      return res.json({ success: true, fields: {}, confidence: "Low", text: "" });
+    }
+
+    const fields = extractFieldsFromText(parsedText);
+    const fieldCount = Object.keys(fields).length;
+    const confidence = fieldCount >= 4 ? "High (" + (85 + fieldCount) + "%)" : fieldCount >= 1 ? "Medium (60%)" : "Low";
+
+    res.json({
+      success: true,
+      fields,
+      confidence,
+      text: parsedText
+    });
+  } catch (err) {
+    console.error("AI EXTRACTION ERROR:", err);
+    res.status(500).json({ success: false, message: "AI extraction failed: " + err.message });
   }
 });
 

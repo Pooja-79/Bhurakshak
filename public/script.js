@@ -786,7 +786,9 @@ async function loadRecords() {
 
 async function openHumanVerification(id) {
     try {
-        const response = await fetch(`/api/admin/records/${encodeURIComponent(id)}`);
+        const response = await fetch(`/api/admin/records/${encodeURIComponent(id)}`, {
+            headers: { "x-admin-key": localStorage.getItem("bhurakshak_admin_key") || "" }
+        });
         const data = await response.json();
 
         if (!response.ok) throw new Error(data.message || "Record not found.");
@@ -892,7 +894,10 @@ async function approveRecord() {
     try {
         const response = await fetch(`/api/admin/records/${encodeURIComponent(id)}/status`, {
             method: "PUT",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json",
+                "x-admin-key": localStorage.getItem("bhurakshak_admin_key") || ""
+            },
             body: JSON.stringify({ status: "Verified" })
         });
 
@@ -946,7 +951,10 @@ async function confirmRejectRecord() {
         button.disabled = true;
         const response = await fetch(`/api/admin/records/${encodeURIComponent(id)}/status`, {
             method: "PUT",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json",
+                "x-admin-key": localStorage.getItem("bhurakshak_admin_key") || ""
+            },            
             body: JSON.stringify({
                 status: "Rejected",
                 rejection_reason: reason
@@ -1162,10 +1170,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     $("loginForm")?.addEventListener("submit", event => {
-        event.preventDefault();
-        showToast("Login successful.", "success");
-        closeModal("loginModal");
-    });
+    event.preventDefault();
+    const enteredKey = $("loginPassword")?.value || "";
+    localStorage.setItem("bhurakshak_admin_key", enteredKey);
+    showToast("Login successful.", "success");
+    closeModal("loginModal");
+});
 
     $("showSignup")?.addEventListener("click", () => {
         closeModal("loginModal");
