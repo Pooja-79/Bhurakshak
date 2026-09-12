@@ -282,7 +282,7 @@ app.post('/api/ai/extract', upload.single('document'), async (req, res) => {
     const ocrResult = await ocrSpace(base64File, {
       apiKey: process.env.OCR_SPACE_API_KEY,
       language: 'eng',
-      OCREngine: '3'
+      OCREngine: '2'
     });
 
     const parsedText = ocrResult?.ParsedResults?.[0]?.ParsedText || '';
