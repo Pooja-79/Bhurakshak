@@ -1173,29 +1173,10 @@ document.addEventListener("DOMContentLoaded", () => {
     event.preventDefault();
     const enteredKey = $("loginPassword")?.value || "";
     localStorage.setItem("bhurakshak_admin_key", enteredKey);
-    showToast("Login successful.", "success");
+    showToast("Access granted.", "success");
     closeModal("loginModal");
 });
 
-    $("showSignup")?.addEventListener("click", () => {
-        closeModal("loginModal");
-        openModal("signupModal");
-    });
-
-    $("showLogin")?.addEventListener("click", () => {
-        closeModal("signupModal");
-        openModal("loginModal");
-    });
-
-    $("signupForm")?.addEventListener("submit", event => {
-        event.preventDefault();
-        if ($("signupPassword")?.value !== $("signupConfirm")?.value) {
-            showToast("Passwords do not match.", "error");
-            return;
-        }
-        showToast("Account created.", "success");
-        closeModal("signupModal");
-    });
 
     $("homeSupport")?.addEventListener("click", () => openModal("supportModal"));
     $("supportMenu")?.addEventListener("click", () => openModal("supportModal"));
