@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <meta name="google-site-verification" content="googleb76a187c2b5ed660.html" />
 
     <title>
@@ -576,481 +576,491 @@
     </style>
 
 </head>
-<!-- USER LAND RECORD FORM -->
 
-<div class="modal-overlay" id="userInfoModal">
+<body>
 
-    <div class="modal large">
+    <!-- USER LAND RECORD FORM -->
 
-        <button class="close" type="button" data-close="userInfoModal">
+    <div class="modal-overlay" id="userInfoModal">
 
-            ×
+        <div class="modal large">
 
-        </button>
+            <button class="close" type="button" data-close="userInfoModal">
+
+                ×
+
+            </button>
 
 
-        <div class="modal-icon">
-            🗂️
+            <div class="modal-icon">
+                🗂️
+            </div>
+
+
+            <small data-i18n="landSubmission">LAND RECORD SUBMISSION</small>
+
+
+            <h2 data-i18n="formTitle">User & Land Information</h2>
+
+
+            <p data-i18n="formDesc">Applicant, land, parent and supporting document information fill karein.</p>
+
+
+            <form id="userInfoForm" enctype="multipart/form-data">
+
+
+                <h3 class="form-section-title" data-i18n="applicantInfo">Applicant Information</h3>
+
+
+                <div class="verify-fields">
+
+                    <label>
+                        <span data-i18n="fullName">Full Name</span>
+
+                        <input id="userName" class="name-only" data-i18n-placeholder="placeholderFullName"
+                            pattern="[^0-9]*" autocomplete="name" placeholder="Enter full name" name="user_name"
+                            required>
+
+                    </label>
+
+
+                    <label>
+                        <span data-i18n="mobileNumber">Mobile Number</span>
+
+                        <input id="userContact" class="number-only" data-i18n-placeholder="placeholderMobile"
+                            placeholder="Enter mobile number" name="user_contact" pattern="[0-9]{10}" maxlength="10"
+                            required inputmode="numeric">
+
+                    </label>
+
+
+                    <label>
+                        <span data-i18n="email">Email</span>
+
+                        <input id="userEmail" data-i18n-placeholder="placeholderEmail" placeholder="Enter email address"
+                            name="user_email" type="email">
+
+                    </label>
+
+
+                    <label>
+                        <span data-i18n="idAadhaarLast4">ID / Aadhaar Last 4 Digits</span>
+
+                        <input id="userIdProof" class="number-only" inputmode="numeric"
+                            data-i18n-placeholder="placeholderLast4"
+                            placeholder="Demo only — do NOT enter real ID (e.g. 1234)" pattern="[0-9]{4}" maxlength="4">
+
+                    </label>
+
+                </div>
+
+
+                <h3 class="form-section-title" data-i18n="landInformation">Land Information</h3>
+
+
+                <div class="verify-fields">
+
+                    <label>
+                        <span data-i18n="state">State</span>
+
+                        <input id="userState" name="state" required>
+
+                    </label>
+
+
+                    <label>
+                        <span data-i18n="district">District</span>
+
+                        <input id="userDistrict" name="district" required>
+
+                    </label>
+
+
+                    <label>
+                        <span data-i18n="tehsilTaluk">Tehsil / Taluk</span>
+
+                        <input id="userTehsil" name="tehsil">
+
+                    </label>
+
+
+                    <label>
+                        <span data-i18n="village">Village</span>
+
+                        <input id="userVillage" name="village" required>
+
+                    </label>
+
+
+                    <label>
+                        <span data-i18n="khasraSurvey">Khesara / Survey Number</span>
+
+                        <input id="userKhesara" class="number-slash-only" inputmode="numeric" name="khasra_number"
+                            pattern="[0-9\/-]+" required>
+
+                    </label>
+
+
+                    <label>
+                        <span data-i18n="khataKhatauni">Khata / Khatauni Number</span>
+
+                        <input id="userKhata" class="number-slash-only" name="khata_number" pattern="[0-9\/-]+">
+
+                    </label>
+
+
+                    <label>
+                        <span data-i18n="area">Area</span>
+
+                        <input id="userArea" name="area" data-i18n-placeholder="placeholderArea"
+                            placeholder="Example: 2.46 Hectare">
+
+                    </label>
+
+
+                    <label>
+                        <select id="userLandType" name="land_type">
+                            <option value="">Select Land Type</option>
+                            <option value="Agricultural">Agricultural</option>
+                            <option value="Residential">Residential</option>
+                            <option value="Commercial">Commercial</option>
+                            <option value="Industrial">Industrial</option>
+                            <option value="Government">Government</option>
+                        </select>
+
+                    </label>
+
+
+                    <label>
+                        <span data-i18n="ownershipType">Ownership Type</span>
+
+                        <input id="userOwnership" name="ownership_type" data-i18n-placeholder="placeholderOwnership"
+                            placeholder="Individual / Joint / Inherited">
+
+                    </label>
+
+
+                    <label>
+                        <span data-i18n="registrationId">Registration ID</span>
+
+                        <input id="userRegistration" name="registration_id">
+
+                    </label>
+
+                </div>
+
+
+                <h3 class="form-section-title" data-i18n="fatherMother">Father / Mother Details</h3>
+
+
+                <div class="verify-fields">
+
+                    <label>
+                        <span data-i18n="fatherName">Father's Name</span>
+
+                        <input id="fatherName" class="name-only" name="father_name" pattern="[^0-9]*" autocomplete="off"
+                            required>
+
+                    </label>
+
+
+                    <label>
+                        <span data-i18n="motherName">Mother's Name</span>
+
+                        <input id="motherName" class="name-only" name="mother_name" pattern="[^0-9]*" autocomplete="off"
+                            required>
+
+                    </label>
+
+
+                    <label>
+                        <span data-i18n="fatherIdLast4">Father's ID Last 4 Digits</span>
+
+                        <input id="fatherId" class="number-only" name="father_id_last4" pattern="[0-9]{4}"
+                            maxlength="4">
+
+                    </label>
+
+
+                    <label>
+                        <span data-i18n="motherIdLast4">Mother's ID Last 4 Digits</span>
+
+                        <input id="motherId" class="number-only" name="mother_id_last4" pattern="[0-9]{4}"
+                            maxlength="4">
+
+                    </label>
+
+                </div>
+
+                <p style="background:#fef2f2; color:#7f1d1d; padding:10px; border-radius:8px; font-weight:600;">
+                    ⚠️ Do NOT upload real Aadhaar cards, identity documents, or other sensitive personal information.
+                    Use
+                    sample/demo files only.
+                </p>
+
+
+                <h3 class="form-section-title" data-i18n="supportingDocs">Required Supporting Documents</h3>
+
+
+                <p class="form-note">
+                    Exact requirements state aur land transaction
+                    ke according change ho sakte hain.
+                </p>
+
+
+                <div class="document-checklist">
+
+
+                    <label class="doc-input">
+
+                        <span data-i18n="primaryLandRecord">Primary Land Record / Deed * (Demo File Only)</span>
+
+                        <input type="file" name="land_document" required accept=".pdf,.jpg,.jpeg,.png">
+
+                    </label>
+
+
+                    <label class="doc-input">
+
+                        <span data-i18n="applicantIdProof">Applicant ID Proof * (Demo File Only)</span>
+
+                        <input type="file" name="applicant_id_document" required accept=".pdf,.jpg,.jpeg,.png">
+
+                    </label>
+
+
+                    <label class="doc-input">
+
+                        <span data-i18n="fatherIdProof">Father / Parent ID Proof * (Demo File Only)</span>
+
+                        <input type="file" name="father_id_document" required accept=".pdf,.jpg,.jpeg,.png">
+
+                    </label>
+
+
+                    <label class="doc-input">
+
+                        <span data-i18n="motherIdProof">Mother / Parent ID Proof * (Demo File Only)</span>
+
+                        <input type="file" name="mother_id_document" required accept=".pdf,.jpg,.jpeg,.png">
+
+                    </label>
+
+
+                    <label class="doc-input">
+
+                        <span data-i18n="registryDeed">Registry / Sale Deed (Demo File Only)</span>
+
+                        <input type="file" name="registry_document" accept=".pdf,.jpg,.jpeg,.png">
+
+                    </label>
+
+
+                    <label class="doc-input">
+
+                        <span data-i18n="khatauniRor">Khatauni / Jamabandi / RoR (Demo File Only)</span>
+
+                        <input type="file" name="ror_document" accept=".pdf,.jpg,.jpeg,.png">
+
+                    </label>
+
+
+                    <label class="doc-input">
+
+                        <span data-i18n="mutationIntkal">Mutation / Intkal (Demo File Only)</span>
+
+                        <input type="file" name="mutation_document" accept=".pdf,.jpg,.jpeg,.png">
+
+                    </label>
+
+
+                    <label class="doc-input">
+
+                        <span data-i18n="inheritanceProof">Inheritance / Legal-Heir Proof (Demo File Only)</span>
+
+                        <input type="file" name="inheritance_document" accept=".pdf,.jpg,.jpeg,.png">
+
+                    </label>
+
+
+                    <label class="doc-input">
+
+                        <span data-i18n="otherDocument">Other Supporting Document (Demo File Only)</span>
+
+                        <input type="file" name="other_document" accept=".pdf,.jpg,.jpeg,.png">
+
+                    </label>
+
+
+                </div>
+
+
+                <div id="dbResult">
+                </div>
+
+
+                <div class="modal-actions">
+
+                    <button class="secondary-btn" type="button" data-close="userInfoModal">
+
+                        <span data-i18n="cancel">Cancel</span>
+
+                    </button>
+
+
+                    <button class="secondary-btn" type="button" id="saveUserDraft" data-form-action="save">
+
+                        <i class="fa-solid fa-floppy-disk"></i>
+
+                        <span>Save</span>
+
+                    </button>
+
+                    <button class="primary-btn" type="submit" data-form-action="submit">
+
+                        <i class="fa-solid fa-paper-plane"></i>
+
+                        <span>Save & Submit</span>
+
+                    </button>
+
+                </div>
+
+
+            </form>
+
         </div>
 
+    </div>
 
-        <small data-i18n="landSubmission">LAND RECORD SUBMISSION</small>
 
+    <!-- HUMAN VERIFICATION -->
 
-        <h2 data-i18n="formTitle">User & Land Information</h2>
+    <div class="modal-overlay" id="humanVerificationModal">
 
+        <div class="modal large">
 
-        <p data-i18n="formDesc">Applicant, land, parent and supporting document information fill karein.</p>
+            <button class="close" type="button" data-close="humanVerificationModal">
 
+                ×
 
-        <form id="userInfoForm" enctype="multipart/form-data">
+            </button>
 
 
-            <h3 class="form-section-title" data-i18n="applicantInfo">Applicant Information</h3>
+            <small>
+                HUMAN VERIFICATION
+            </small>
 
 
-            <div class="verify-fields">
+            <h2 id="humanVerifyTitle">
+                Applicant Record
+            </h2>
 
-                <label>
-                    <span data-i18n="fullName">Full Name</span>
 
-                    <input id="userName" class="name-only" data-i18n-placeholder="placeholderFullName" pattern="[^0-9]*"
-                        autocomplete="name" placeholder="Enter full name" name="user_name" required>
-
-                </label>
-
-
-                <label>
-                    <span data-i18n="mobileNumber">Mobile Number</span>
-
-                    <input id="userContact" class="number-only" data-i18n-placeholder="placeholderMobile"
-                        placeholder="Enter mobile number" name="user_contact" pattern="[0-9]{10}" maxlength="10"
-                        required inputmode="numeric">
-
-                </label>
-
-
-                <label>
-                    <span data-i18n="email">Email</span>
-
-                    <input id="userEmail" data-i18n-placeholder="placeholderEmail" placeholder="Enter email address"
-                        name="user_email" type="email">
-
-                </label>
-
-
-                <label>
-                    <span data-i18n="idAadhaarLast4">ID / Aadhaar Last 4 Digits</span>
-
-                    <input id="userIdProof" class="number-only" inputmode="numeric"
-                        data-i18n-placeholder="placeholderLast4" placeholder="Demo only — do NOT enter real ID (e.g. 1234)"
-                        pattern="[0-9]{4}" maxlength="4">
-
-                </label>
-
-            </div>
-
-
-            <h3 class="form-section-title" data-i18n="landInformation">Land Information</h3>
-
-
-            <div class="verify-fields">
-
-                <label>
-                    <span data-i18n="state">State</span>
-
-                    <input id="userState" name="state" required>
-
-                </label>
-
-
-                <label>
-                    <span data-i18n="district">District</span>
-
-                    <input id="userDistrict" name="district" required>
-
-                </label>
-
-
-                <label>
-                    <span data-i18n="tehsilTaluk">Tehsil / Taluk</span>
-
-                    <input id="userTehsil" name="tehsil">
-
-                </label>
-
-
-                <label>
-                    <span data-i18n="village">Village</span>
-
-                    <input id="userVillage" name="village" required>
-
-                </label>
-
-
-                <label>
-                    <span data-i18n="khasraSurvey">Khesara / Survey Number</span>
-
-                    <input id="userKhesara" class="number-slash-only" inputmode="numeric" name="khasra_number"
-                        pattern="[0-9\/-]+" required>
-
-                </label>
-
-
-                <label>
-                    <span data-i18n="khataKhatauni">Khata / Khatauni Number</span>
-
-                    <input id="userKhata" class="number-slash-only" name="khata_number" pattern="[0-9\/-]+">
-
-                </label>
-
-
-                <label>
-                    <span data-i18n="area">Area</span>
-
-                    <input id="userArea" name="area" data-i18n-placeholder="placeholderArea"
-                        placeholder="Example: 2.46 Hectare">
-
-                </label>
-
-
-                <label>
-                    <select id="userLandType" name="land_type">
-                        <option value="">Select Land Type</option>
-                        <option value="Agricultural">Agricultural</option>
-                        <option value="Residential">Residential</option>
-                        <option value="Commercial">Commercial</option>
-                        <option value="Industrial">Industrial</option>
-                        <option value="Government">Government</option>
-                    </select>
-
-                </label>
-
-
-                <label>
-                    <span data-i18n="ownershipType">Ownership Type</span>
-
-                    <input id="userOwnership" name="ownership_type" data-i18n-placeholder="placeholderOwnership"
-                        placeholder="Individual / Joint / Inherited">
-
-                </label>
-
-
-                <label>
-                    <span data-i18n="registrationId">Registration ID</span>
-
-                    <input id="userRegistration" name="registration_id">
-
-                </label>
-
-            </div>
-
-
-            <h3 class="form-section-title" data-i18n="fatherMother">Father / Mother Details</h3>
-
-
-            <div class="verify-fields">
-
-                <label>
-                    <span data-i18n="fatherName">Father's Name</span>
-
-                    <input id="fatherName" class="name-only" name="father_name" pattern="[^0-9]*" autocomplete="off"
-                        required>
-
-                </label>
-
-
-                <label>
-                    <span data-i18n="motherName">Mother's Name</span>
-
-                    <input id="motherName" class="name-only" name="mother_name" pattern="[^0-9]*" autocomplete="off"
-                        required>
-
-                </label>
-
-
-                <label>
-                    <span data-i18n="fatherIdLast4">Father's ID Last 4 Digits</span>
-
-                    <input id="fatherId" class="number-only" name="father_id_last4" pattern="[0-9]{4}" maxlength="4">
-
-                </label>
-
-
-                <label>
-                    <span data-i18n="motherIdLast4">Mother's ID Last 4 Digits</span>
-
-                    <input id="motherId" class="number-only" name="mother_id_last4" pattern="[0-9]{4}" maxlength="4">
-
-                </label>
-
-            </div>
-
-            <p style="background:#fef2f2; color:#7f1d1d; padding:10px; border-radius:8px; font-weight:600;">
-                ⚠️ Do NOT upload real Aadhaar cards, identity documents, or other sensitive personal information. Use sample/demo files only.
-            </p>
-
-
-            <h3 class="form-section-title" data-i18n="supportingDocs">Required Supporting Documents</h3>
-
-
-            <p class="form-note">
-                Exact requirements state aur land transaction
-                ke according change ho sakte hain.
-            </p>
-
-
-            <div class="document-checklist">
-
-
-                <label class="doc-input">
-
-                    <span data-i18n="primaryLandRecord">Primary Land Record / Deed *</span>
-
-                    <input type="file" name="land_document" required accept=".pdf,.jpg,.jpeg,.png">
-
-                </label>
-
-
-                <label class="doc-input">
-
-                    <span data-i18n="applicantIdProof">Applicant ID Proof *</span>
-
-                    <input type="file" name="applicant_id_document" required accept=".pdf,.jpg,.jpeg,.png">
-
-                </label>
-
-
-                <label class="doc-input">
-
-                    <span data-i18n="fatherIdProof">Father / Parent ID Proof *</span>
-
-                    <input type="file" name="father_id_document" required accept=".pdf,.jpg,.jpeg,.png">
-
-                </label>
-
-
-                <label class="doc-input">
-
-                    <span data-i18n="motherIdProof">Mother / Parent ID Proof *</span>
-
-                    <input type="file" name="mother_id_document" required accept=".pdf,.jpg,.jpeg,.png">
-
-                </label>
-
-
-                <label class="doc-input">
-
-                    <span data-i18n="registryDeed">Registry / Sale Deed</span>
-
-                    <input type="file" name="registry_document" accept=".pdf,.jpg,.jpeg,.png">
-
-                </label>
-
-
-                <label class="doc-input">
-
-                    <span data-i18n="khatauniRor">Khatauni / Jamabandi / RoR</span>
-
-                    <input type="file" name="ror_document" accept=".pdf,.jpg,.jpeg,.png">
-
-                </label>
-
-
-                <label class="doc-input">
-
-                    <span data-i18n="mutationIntkal">Mutation / Intkal</span>
-
-                    <input type="file" name="mutation_document" accept=".pdf,.jpg,.jpeg,.png">
-
-                </label>
-
-
-                <label class="doc-input">
-
-                    <span data-i18n="inheritanceProof">Inheritance / Legal-Heir Proof</span>
-
-                    <input type="file" name="inheritance_document" accept=".pdf,.jpg,.jpeg,.png">
-
-                </label>
-
-
-                <label class="doc-input">
-
-                    <span data-i18n="otherDocument">Other Supporting Document</span>
-
-                    <input type="file" name="other_document" accept=".pdf,.jpg,.jpeg,.png">
-
-                </label>
-
-
-            </div>
-
-
-            <div id="dbResult">
+            <div id="humanVerifyBody">
             </div>
 
 
             <div class="modal-actions">
 
-                <button class="secondary-btn" type="button" data-close="userInfoModal">
+                <button class="secondary-btn" type="button" data-close="humanVerificationModal">
 
-                    <span data-i18n="cancel">Cancel</span>
-
-                </button>
-
-
-                <button class="secondary-btn" type="button" id="saveUserDraft" data-form-action="save">
-
-                    <i class="fa-solid fa-floppy-disk"></i>
-
-                    <span>Save</span>
+                    Close
 
                 </button>
 
-                <button class="primary-btn" type="submit" data-form-action="submit">
 
-                    <i class="fa-solid fa-paper-plane"></i>
+                <button class="secondary-btn" type="button" id="rejectApplicantRecord">
 
-                    <span>Save & Submit</span>
+                    ✕ Reject
+
+                </button>
+
+                <button class="primary-btn" type="button" id="approveApplicantRecord">
+
+                    ✓ Verify
 
                 </button>
 
             </div>
 
-
-        </form>
-
-    </div>
-
-</div>
-
-
-<!-- HUMAN VERIFICATION -->
-
-<div class="modal-overlay" id="humanVerificationModal">
-
-    <div class="modal large">
-
-        <button class="close" type="button" data-close="humanVerificationModal">
-
-            ×
-
-        </button>
-
-
-        <small>
-            HUMAN VERIFICATION
-        </small>
-
-
-        <h2 id="humanVerifyTitle">
-            Applicant Record
-        </h2>
-
-
-        <div id="humanVerifyBody">
-        </div>
-
-
-        <div class="modal-actions">
-
-            <button class="secondary-btn" type="button" data-close="humanVerificationModal">
-
-                Close
-
-            </button>
-
-
-            <button class="secondary-btn" type="button" id="rejectApplicantRecord">
-
-                ✕ Reject
-
-            </button>
-
-            <button class="primary-btn" type="button" id="approveApplicantRecord">
-
-                ✓ Verify
-
-            </button>
-
         </div>
 
     </div>
 
-</div>
-
-
-<body>
 
     <!-- =====================================================
      HEADER
 ===================================================== -->
 
     <div style="background:#7f1d1d; color:#fff; text-align:center; padding:10px 16px; font-size:14px; font-weight:700;">
-        ⚠️ DEMO / PROTOTYPE: BhuRakshak — SIH 2026 Hackathon Project. This is a STUDENT/HACKATHON PROJECT and is NOT an official Government of India website.
-</div>
-
-<header class="top-header">
-    <div class="government-brand">
-        <button class="header-menu-btn" id="menuButton" type="button" aria-label="Open Menu" aria-expanded="false">
-            <i class="fa-solid fa-bars"></i>
-        </button>
-        <div class="government-text">
-            <h2>BhuRakshak</h2>
-            <p>SIH 2026 Prototype</p>
-            <small>Digital Land Governance Demo</small>
-        </div>
+        ⚠️ DEMO / PROTOTYPE: BhuRakshak — SIH 2026 Hackathon Project. This is a STUDENT/HACKATHON PROJECT and is NOT an
+        official Government of India website.
     </div>
+
+    <header class="top-header">
+        <div class="government-brand">
+            <button class="header-menu-btn" id="menuButton" type="button" aria-label="Open Menu" aria-expanded="false">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="government-text">
+                <h2>BhuRakshak</h2>
+                <p>SIH 2026 Prototype</p>
+                <small>Digital Land Governance Demo</small>
+            </div>
+        </div>
 
 
         <div class="brand">
 
             <div class="brand-symbol">
-<img src="logo.jpeg" alt="BhuRakshak Logo" style="width:100%; height:100%; object-fit:contain; border-radius:10px;">            </div>
+                <img src="logo.jpeg" alt="BhuRakshak Logo"
+                    style="width:50%; height:50%; object-fit:contain; border-radius:10px;">
 
-            <div>
+                <div>
 
-                <strong>
-                    Bhu<span>Rakshak</span>
-                </strong>
+                    <strong>
+                        Bhu<span>Rakshak</span>
+                    </strong>
 
-                <small>
-                    INTELLIGENT LAND RECORD SYSTEM
-                </small>
+                    <small>
+                        INTELLIGENT LAND RECORD SYSTEM
+                    </small>
+
+                </div>
 
             </div>
 
-        </div>
+
+            <div class="header-actions">
+
+                <button class="lang active" data-lang="en" type="button">
+
+                    EN
+
+                </button>
+
+                <button class="lang" data-lang="hi" type="button">
+
+                    हिं
+
+                </button>
 
 
-        <div class="header-actions">
+                <button class="login officer" data-login="officer" type="button">
 
-            <button class="lang active" data-lang="en" type="button">
+                    Officer Login
 
-                EN
-
-            </button>
-
-            <button class="lang" data-lang="hi" type="button">
-
-                हिं
-
-            </button>
+                </button>
 
 
-            <button class="login officer" data-login="officer" type="button">
+                <button class="login admin" data-login="admin" type="button">
 
-                Officer Login
+                    Admin
 
-            </button>
+                </button>
 
-
-            <button class="login admin" data-login="admin" type="button">
-
-                Admin
-
-            </button>
+            </div>
 
         </div>
 
@@ -2763,15 +2773,15 @@
 
             <!-- LOGIN -->
 
-        <form id="loginForm">
-            <label>
-            Officer Access Code (Demo)
-            <input id="loginPassword" type="text" required placeholder="Enter demo access code">
-            </label>
-            <button class="primary-btn full" type="submit">
-            Continue →
-            </button>
-        </form>
+            <form id="loginForm">
+                <label>
+                    Officer Access Code (Demo)
+                    <input id="loginPassword" type="password" required placeholder="Enter demo access code">
+                </label>
+                <button class="primary-btn full" type="submit">
+                    Continue →
+                </button>
+            </form>
 
 
 
