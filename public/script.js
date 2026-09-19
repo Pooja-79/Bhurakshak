@@ -596,12 +596,12 @@ async function submitUserRecord(event, submitAction = "submit") {
         await loadRecords();
         await loadStats();
 
-        if (submitAction === "submit") {
-            closeModal("userInfoModal");
-            form.reset();
-            if ($("dbResult")) $("dbResult").innerHTML = "";
-            currentRecordId = null;
-        }
+       if (submitAction === "submit") {
+        form.reset();
+        currentRecordId = null;
+        // Modal stays open so the user can see the success message and QR code.
+        // They can close it manually using the Cancel/X button.
+    }
 
     } catch (error) {
         console.error("SUBMIT ERROR:", error);

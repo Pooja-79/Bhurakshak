@@ -5,6 +5,7 @@ const multer = require('multer');
 const cors = require('cors');
 const cloudinary = require('cloudinary').v2;
 const streamifier = require('streamifier');
+const path = require('path');
 const { ocrSpace } = require('ocr-space-api-wrapper');
 const QRCode = require('qrcode');
 
@@ -12,6 +13,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
+
+// Explicit root route (needed for Vercel, since express.static() alone isn't used there)
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 // ---- Cloudinary configuration ----
 cloudinary.config({
