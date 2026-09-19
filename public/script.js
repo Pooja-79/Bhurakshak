@@ -637,7 +637,7 @@ function showDatabaseResult(record, documents = []) {
             <img src="/api/records/${record?.id}/qrcode" style="display:none" id="qrPlaceholder">
             <p>${documents.length} document(s) uploaded.</p>
         </div>
-    `;
+    `; 
     if (record?.id) {
         fetch(`/api/records/${record.id}/qrcode`).then(r => r.json()).then(data => {
             if (data.success) {
