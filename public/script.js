@@ -634,9 +634,20 @@ function showDatabaseResult(record, documents = []) {
                 <div><span>Village</span><b>${escapeHTML(record?.village)}</b></div>
                 <div><span>Khasra</span><b>${escapeHTML(record?.khasra_number)}</b></div>
             </div>
+            <img src="/api/records/${record?.id}/qrcode" style="display:none" id="qrPlaceholder">
             <p>${documents.length} document(s) uploaded.</p>
         </div>
     `;
+    if (record?.id) {
+        fetch(`/api/records/${record.id}/qrcode`).then(r => r.json()).then(data => {
+            if (data.success) {
+                const img = document.createElement('img');
+                img.src = data.qrCode;
+                img.style.cssText = 'width:150px;margin-top:12px;';
+                box.querySelector('.db-result-card')?.appendChild(img);
+            }
+        });
+    }
 }
 
 function showDatabaseError(message) {

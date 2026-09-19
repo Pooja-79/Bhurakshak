@@ -6,6 +6,7 @@ const cors = require('cors');
 const cloudinary = require('cloudinary').v2;
 const streamifier = require('streamifier');
 const { ocrSpace } = require('ocr-space-api-wrapper');
+const QRCode = require('qrcode');
 
 const app = express();
 app.use(cors());
@@ -304,6 +305,70 @@ app.post('/api/ai/extract', upload.single('document'), async (req, res) => {
   } catch (err) {
     console.error("AI EXTRACTION ERROR:", err);
     res.status(500).json({ success: false, message: "AI extraction failed: " + err.message });
+  }
+});
+
+
+// ---- QR CODE: generate a QR image linking to the public verification page ----
+app.get('/api/records/:id/qrcode', async (req, res) => {
+  try {
+    const record = await LandRecord.findById(req.params.id);
+    if (!record) return res.status(404).json({ success: false, message: "Record not found." });
+
+    const verifyUrl = `${req.protocol}://${req.get('host')}/verify/${record._id}`;
+    const qrDataUrl = await QRCode.toDataURL(verifyUrl, { width: 300, margin: 2 });
+
+    res.json({ success: true, qrCode: qrDataUrl, verifyUrl });
+  } catch (err) {
+    console.error("QR CODE ERROR:", err);
+    res.status(500).json({ success: false, message: "Failed to generate QR code." });
+  }
+});
+
+// ---- PUBLIC VERIFICATION PAGE (safe, non-sensitive info only) ----
+app.get('/verify/:id', async (req, res) => {
+  try {
+    const record = await LandRecord.findById(req.params.id);
+    if (!record) {
+      return res.status(404).send(`
+        <html><body style="font-family:sans-serif;text-align:center;padding:60px;">
+          <h2>Record Not Found</h2>
+          <p>This QR code does not match any record in the system.</p>
+        </body></html>
+      `);
+    }
+
+    const statusColor = record.status === "Verified" ? "#16a34a" : record.status === "Rejected" ? "#dc2626" : "#d97706";
+
+    res.send(`
+      <html>
+      <head>
+        <title>BhuRakshak Verification - ${record.record_id}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      </head>
+      <body style="font-family:sans-serif; max-width:480px; margin:40px auto; padding:0 20px;">
+        <div style="background:#7f1d1d; color:#fff; text-align:center; padding:10px; border-radius:8px; margin-bottom:20px; font-size:13px;">
+          ⚠️ SIH 2026 Prototype - Not an official Government verification system
+        </div>
+        <h2 style="margin-bottom:4px;">BhuRakshak Record Verification</h2>
+        <p style="color:#666;">Record ID: <b>${record.record_id}</b></p>
+        <div style="background:${statusColor}; color:#fff; display:inline-block; padding:6px 14px; border-radius:20px; font-weight:600; margin-bottom:20px;">
+          ${record.status}
+        </div>
+        <table style="width:100%; border-collapse:collapse; margin-top:10px;">
+          <tr><td style="padding:8px 0; color:#666;">Village</td><td style="padding:8px 0; font-weight:600;">${record.village || '-'}</td></tr>
+          <tr><td style="padding:8px 0; color:#666;">District</td><td style="padding:8px 0; font-weight:600;">${record.district || '-'}</td></tr>
+          <tr><td style="padding:8px 0; color:#666;">State</td><td style="padding:8px 0; font-weight:600;">${record.state || '-'}</td></tr>
+          <tr><td style="padding:8px 0; color:#666;">Khasra Number</td><td style="padding:8px 0; font-weight:600;">${record.khasra_number || '-'}</td></tr>
+          <tr><td style="padding:8px 0; color:#666;">Land Type</td><td style="padding:8px 0; font-weight:600;">${record.land_type || '-'}</td></tr>
+        </table>
+        <p style="margin-top:24px; font-size:12px; color:#999;">This is a demo verification page for a student hackathon project. No personal identity information is displayed here.</p>
+      </body>
+      </html>
+    `);
+  } catch (err) {
+    console.error("VERIFY PAGE ERROR:", err);
+    res.status(500).send("Error loading verification page.");
   }
 });
 
